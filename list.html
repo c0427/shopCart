@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="main.css" />
+		
+		<script src="jquery.min.js"></script>
+		<script src="cookie.js"></script>
+		<style>
+			.header{
+				height: 40px;
+				width: 900px;
+				margin: 0 auto 50px;
+			}
+		</style>
+	</head>
+	<body>		 
+		<div class="header">
+			<span id="s"><a href="login.html">登录 / 注册</a></span>
+			<span id="s1">
+			</span>
+		</div>
+		<div class="nav clearfix">
+			<!--<span>小米手机</span>-->
+		</div>		
+		<ul class="shoplist clearfix">
+			<!--<li>
+				<a href="page.html">
+					<img src="img/1.jpg" alt="" />
+					<p>小米1</p>
+					<p>890</p>
+				</a>
+				<button>加入购物车</button>
+			</li>-->
+		</ul>	
+	</body>
+</html>
+<script type="text/javascript">
+	//1、页面加载请求服务器数据
+     window.onload=function(){
+     	$.ajax({
+     		type:"get",
+     		url:"w.json",
+     		cache:"true",
+     		async:"true",
+     		success:function(res){
+     			var title = "";
+     			var str ="";
+     			for(var a in res){
+     				title +=`
+     				<span classify = ${a}>${res[a].name}</span>
+     				`
+     				for(var i = 0;i<res[a].list.length;i++){
+     					var cur = res[a].list[i];
+     					str +=`
+     					<li>
+				<a href="page.html?id=${cur.id}&classify=${a}">
+					<img src="img/${cur.src}" alt="" />
+					<p>${cur.name}</p>
+					<p>${cur.price}</p>
+				</a>
+				<button pid=${cur.id} name = ${cur.name} src = ${cur.src} price=${cur.price}>加入购物车</button>
+			</li>
+     					`
+     				}
+     			}
+     			$(".nav").html(title);
+     			$(".shoplist").html(str);
+     			$(".nav span").mouseenter(function(){
+     				var classify = $(this).attr("classify");
+     				var arr = res[classify].list;
+     				var strl = "";
+     				for(var i = 0;i<arr.length;i++){
+     					var curl = arr[i];
+     					strl+=`
+     					<li>
+				<a href="page.html?id=${curl.id}&classify=${classify}">
+					<img src="img/${curl.src}" alt="" />
+					<p>${curl.name}</p>
+					<p>${curl.price}</p>
+				</a>
+				<button pid=${curl.id} name = ${curl.name} src=${curl.src} price=${curl.price}>加入购物车</button>
+			</li>
+     					`
+     				}
+     				$(".shoplist").html(strl);
+     			})
+     		}
+     	})
+    var arr = [];
+    $("shoplist").on('click','button',function(){
+    	var flag = true;
+    	var obj = {
+    		id:${this}.attr('pid'),
+    		name:${this}.attr('name'),
+    		src:${this}.attr('src'),
+    		price:${price}.attr('price'),
+    		count:1
+    	}
+    	var cookieinfor = getCookie("shopList");
+    	if(cookieinfor!=0){
+    		arr=cookieinfor;
+    		for(var i = 0 ;i<arr.length;i++){
+    			if(arr[i].id==obj.id){
+    				arr[i].count++;
+    				flag = false;
+    			}
+    		}
+    	}
+    	setCookie("shopList",JSON.Stringify(arr)){
+    		if(!confirm("确定-继续购物，取消-去购物车结算")){
+    			window.location.href="shopcar.html";
+    		}
+    	}
+    })
+     }
+</script>
